@@ -10,8 +10,6 @@ jobs:
     steps:
       - name: Check out the Project Repository
         uses: actions/checkout@v4.1.0
-        run: |
-          python3 -m unittest credit_simulation/tests/test_credit_simulation.py
       
       - name: Log in to Docker Hub
         uses: docker/login-action@v3.0.0
