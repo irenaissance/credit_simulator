@@ -1,7 +1,8 @@
 import os
 from credit_simulation import vehicle as vehicle
 import sys
-
+import locale
+locale.setlocale(locale.LC_NUMERIC, 'en_US.UTF-8')
 
 class CreditMenu:
     def __init__(self):
@@ -20,22 +21,29 @@ class CreditMenu:
         while self.stepNumber <= self.totalStep:
             isAllowNextStep=True
             if(self.stepNumber==0):
-                vehicleType = input("Input Jenis Kendaraan Motor|Mobil (Alphabet, Ignore Cased)) : ")
+                vehicleType = input("Input Jenis Kendaraan Motor|Mobil : ")
                 if(vehicle.Vehicle.isVehicleTypeValid(vehicleType) == False):
+                    print(">> Invalid Vehicle Type Input, Vehicle Type must be 'motor/mobil'")
                     isAllowNextStep=False
             elif(self.stepNumber==1):
-                vehicleCondition = input("Input Kendaraan Bekas|Baru. (Alphabet, Ignore Cased) : ")
+                vehicleCondition = input("Input Kendaraan Bekas|Baru : ")
                 if(vehicle.Vehicle.isVehicleConditionValid(vehicleCondition) == False):
+                    print(">> Invalid Vehicle Condition Input, Vehicle Condition must be 'baru/bekas'")
                     isAllowNextStep=False
             elif(self.stepNumber==2):
                 isValidVehicleYearInput=True
                 
-                vehicleYear = input("Input Tahun Kendaraan (Numeric, 4 Digit) : ");
+                vehicleYear = input("Input Tahun Kendaraan : ");
                 
                 if(vehicleYear.isnumeric() and len(vehicleYear)==4):
                     if(vehicle.Vehicle.isVehicleYearValid(vehicleCondition,int(vehicleYear)) == False):
+                        if(vehicleCondition.lower()=="baru"):
+                            print(f">> Invalid Vehicle Year Input, Vehicle Year must not less than {vehicle.Vehicle.year-1}")
+                        else:
+                            print(f">> Invalid Vehicle Year Input, Vehicle Year must be greater than 1000 and {vehicle.Vehicle.year} and must be Numeric")
                         isValidVehicleYearInput=False
                 else:
+                    print(f">> Invalid Vehicle Year Input, Vehicle Year must be greater than 1000 and {vehicle.Vehicle.year} and must be Numeric")
                     isValidVehicleYearInput=False
                     
                 if(isValidVehicleYearInput==False):
@@ -44,10 +52,11 @@ class CreditMenu:
             elif(self.stepNumber==3):
                 isValidTotalLoanInput=True
                 
-                totalLoan = input("Input Jumlah Pinjaman Total. (Numeric <= 1 miliyar) : ");
+                totalLoan = input("Input Jumlah Pinjaman Total : ");
                 
                 if(totalLoan.isnumeric()):
                     if(vehicle.Vehicle.isTotalLoanValid(int(totalLoan)) == False):
+                        print(">> Invalid Total Loan Input, Total Loan must not be 0 and must not greater than 1 miliyar")
                         isValidTotalLoanInput=False
                 else:
                     isValidTotalLoanInput=False
@@ -62,6 +71,7 @@ class CreditMenu:
                 
                 if(tenor.isnumeric()):
                     if(vehicle.Vehicle.isTenorValid(int(tenor)) == False):
+                        print(">> Invalid Tenor Input, tenor input must be range 1 - 6 years")
                         isValidTenorInput=False
                 else:
                     isValidTenorInput=False
@@ -70,12 +80,23 @@ class CreditMenu:
                     isAllowNextStep=False
             elif(self.stepNumber==5):
                 isValidTotalDownPaymentInput = True
-
-                totalDownPayment = input("Input Jumlah DP : ");
+                formattedMinDP = ""
+                if(vehicleCondition.lower()=="bekas"):
+                    formattedMinDP = locale.format_string("%.f", vehicle.Vehicle.minimumPercentageDownPaymentBekas * int(totalLoan), grouping=True)
+                    totalDownPayment = input(f"Input Jumlah DP Minimum is {formattedMinDP}: ");
+                else:
+                    formattedMinDP = locale.format_string("%.f", vehicle.Vehicle.minimumPercentageDownPaymentBaru * int(totalLoan), grouping=True)
+                    totalDownPayment = input(f"Input Jumlah DP Minimum is {formattedMinDP}: ");
 
 
                 if(totalDownPayment.isnumeric()):
+                    formattedTotalLoan = locale.format_string("%.f", int(totalLoan), grouping=True)
                     if(vehicle.Vehicle.isTotalDownPaymentValid(vehicleCondition,int(totalDownPayment),int(totalLoan)) == False):
+                        if(vehicleCondition.lower()=="bekas"):
+                            print(f">> Invalid Total Down Payment Vehicle Condition Bekas Input, Total Down Payment Input must greater than {formattedMinDP} and less than {formattedTotalLoan}")
+                        else:
+                            print(f">> Invalid Total Down Payment Vehicle Condition Baru Input, Total Down Payment Input must greater than {formattedMinDP} and less than {formattedTotalLoan}")
+                            
                         isValidTotalDownPaymentInput=False
                 else:
                     isValidTotalDownPaymentInput=False
@@ -102,7 +123,7 @@ class CreditMenu:
                 reCalculate=''
                 print("\n\n")
                 while(reCalculate.lower() != 'y' and reCalculate.lower() != 'n'):
-                    reCalculate = input("Do you want to recalculate ? Y/N : ");
+                    reCalculate = input("Do you want to ReInput for new Simulation ? Y/N : ");
                 if(reCalculate.lower()=='y'):
                     os.system('clear')
                     self.stepNumber=-1
@@ -138,7 +159,3 @@ if __name__=="__main__":
                     
     else:
         CreditMenu().run()
-
-
-
-
