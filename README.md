@@ -15,3 +15,6 @@ Credit Simulator for calculating and simulation installment of vehicle
 
 # Run UnitTest for Credit Simulator
 ```python -m unittest credit_simulation\tests\test_credit_simulation.py```
+
+# Rebuild this project with Docker
+```docker build -t credit_simulator:${version} .```
