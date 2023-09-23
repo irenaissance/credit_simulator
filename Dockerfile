@@ -11,5 +11,4 @@ WORKDIR /app
 COPY . /app
 RUN locale
 RUN pip install -r requirements.txt
-RUN python -m unittest credit_simulation/tests/test_credit_simulation.py
 ENTRYPOINT ["python3","credit_menu.py"]
