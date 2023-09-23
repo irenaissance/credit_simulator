@@ -1,10 +1,7 @@
 # credit_simulator
 Credit Simulator for calculating and simulation installment of vehicle
 
-# Run Credit Simulator In Windows
-##### First Approach :
-```credit_simulator.exe``` or ```credit_simulator.exe file_inputs.txt```
-##### Second Approach :
+# Run Credit Simulator In Linux
 ```./credit_simulator``` or ```./credit_simulator file_inputs.txt```
 
 # Run Credit Simulator With Docker
